@@ -93,12 +93,12 @@ for i in range(1,len(sys.argv)):
     while(i+j < len(sys.argv) and sys.argv[i+j] not in ['-a','-e','-d','-m','-i','-o']):
       args[sys.argv[i]].append(sys.argv[i+j])
       j += 1
-print(args)
+#print(args)
 
-img_path = 'img.jpg' # args['-i'][0]
-interpolation = 'bilinear' # args['-m'][0]
-out_path = 'result_'+img_path # args['-o'][0]
-option = '-a' # sys.argv[1]
+img_path = args['-i'][0] # 'img.jpg'
+interpolation = args['-m'][0] # 'bilinear'
+out_path = args['-o'][0] # 'result_'+img_path
+option = sys.argv[1] # '-a'
 img_in = cv2.imread(img_path,0)
 plt.figure(1)
 plt.imshow(img_in,cmap='gray')
@@ -112,7 +112,7 @@ img_in_pad1 = np.pad(img_in,(1,1),'edge') # Cria borda
 img_in_pad2 = np.pad(img_in,(2,2),'edge')
 
 if(option=='-a'):
-  angle = -np.pi/4 # args['-a']
+  angle = float(args['-a'][0]) # -np.pi/4
   sin_t = np.sin(-angle) # ângulo da rotação inversa
   cos_t = np.cos(-angle)
   sin_ = np.sin(angle)
@@ -141,15 +141,18 @@ if(option=='-a'):
   plt.figure(2)
   plt.imshow(img_out,cmap='gray')
   plt.show()
+  cv2.imwrite(out_path,img_out)
 elif(option in ['-e','-d']):
   if(option=='-e'):
-    scale_x = 0.5 # args['-e'][0]
-    scale_y = 0.5 # args['-e'][0]
+    scale_x = float(args['-e'][0]) # 0.5
+    scale_y = float(args['-e'][0]) # 0.5
     new_height = int(img_height*scale_y)
     new_width = int(img_width*scale_x)
   elif(option=='-d'):
-    new_height = 200 # args['-d'][0]
-    new_width = 200 # args['-d'][1]
+    new_height = int(args['-d'][0]) # 200
+    new_width = int(args['-d'][1]) # 200
+    scale_x = float(new_width)/img_width
+    scale_y = float(new_height)/img_height
   new_center_y = new_height/2
   new_center_x = new_width/2
 
@@ -168,6 +171,7 @@ elif(option in ['-e','-d']):
   plt.figure(3)
   plt.imshow(img_scaled,cmap='gray')
   plt.show()
+  cv2.imwrite(out_path,img_scaled)
 else:
   print('Opção inválida. Uso:')
   print('prog \\')
@@ -177,3 +181,4 @@ else:
   print('\t[-m interpolação] \\')
   print('\t[-i imagem] \\')
   print('\t[-o imagem] \\')
+
